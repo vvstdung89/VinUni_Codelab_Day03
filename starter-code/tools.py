@@ -58,5 +58,16 @@ TOOL_DEFINITIONS = [
 
 TOOL_MAP = {
     "get_flight_info": get_flight_info,
-    "get_weather_forecast": get_weather_forecast
+    "get_weather_forecast": get_weather_forecast,
 }
+
+
+def execute_tool(name: str, args: Dict[str, Any] | None = None) -> Any:
+    """Look up a tool in TOOL_MAP and run it with the given args."""
+    tool_name = (name or "").strip().lower()
+    if tool_name not in TOOL_MAP:
+        return {"error": f"Unknown tool: {name}"}
+    try:
+        return TOOL_MAP[tool_name](**(args or {}))
+    except TypeError as exc:
+        return {"error": f"Invalid args for {tool_name}: {exc}"}
